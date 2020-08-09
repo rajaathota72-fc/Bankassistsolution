@@ -1,8 +1,16 @@
+## importing necessary libraries
+# importing our os
 import os
+#cv stands for computer vision which helps us to recognise the images
 import cv2
+#pandas is used to deal with data frames (whatever a/cs we are creating will be stored in a table)
 import pandas as pd
+#numpy is used for creating arrays
 import numpy as np
+#in order to read images in python environment we use pil(python image library) package
 from PIL import Image, ImageEnhance
+#the below function deals with importing details like name, account number & amount entered in the web server
+#and store it in the user database folder
 def storing_data(name,account_number,amount):
     List = [name,account_number,amount]
     df = pd.DataFrame(List)
@@ -11,6 +19,9 @@ def storing_data(name,account_number,amount):
     file = os.path.join(directory,name)
     save = df.to_csv(file+"/account_details.csv")
     return save
+
+#function to detect face in the given image/ uploaded image
+face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
 def detect_faces(our_image):
     new_img = np.array(our_image.convert('RGB'))
@@ -23,6 +34,15 @@ def detect_faces(our_image):
         cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
     return img, faces
 
+#it is used to store the image in the respective folder when face is recognised
+def store_image(image,x):
+    image1 = Image.open(image)
+    directory = "user_database/"
+    file = os.path.join(directory, x)
+    save1 = image1.save(file+"/"+x+".png")
+    return save1
+
+# the function is for recording and storing audio of the user
 def record_audio(name):
     import pyaudio
     import wave
@@ -65,24 +85,17 @@ def record_audio(name):
     wf = wave.open(filename, "wb")
     # set the channels
     wf.setnchannels(channels)
-    # set the sample format
+    # set the sample format (amplitude(peak of the sound wave))
     wf.setsampwidth(p.get_sample_size(FORMAT))
-    # set the sample rate
+    # set the sample rate (setting the frequency)
     wf.setframerate(sample_rate)
-    # write the frames as bytes
+    # write the frames as bytes (for joining
     wf.writeframes(b"".join(frames))
     # close the file
     wf.close()
 
-def store_image(image,x):
-    image1 = Image.open(image)
-    directory = "user_database/"
-    file = os.path.join(directory, x)
-    save1 = image1.save(file+"/"+x+".png")
-    return save1
 
 
-face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 import streamlit as st
 def main():
     st.title("Bank Assist System : Super Admin Panel")
@@ -101,7 +114,10 @@ def main():
         st.balloons()
 
     if st.button("Face Authentication"):
+        import io
         image_file = st.file_uploader("Upload Image for face Authentication", type=['jpg', 'png', 'jpeg'])
+        text_io = io.TextIOWrapper(image_file)
+        st.set_option('deprecation.showfileUploaderEncoding', False)
         our_image = Image.open(image_file)
         result_img, result_faces = detect_faces(our_image)
         st.image(result_img)
@@ -110,8 +126,9 @@ def main():
         st.success("Face stored successfully")
 
     if st.button("Record Voice note"):
-        st.write("Record a voice note")
-        record_audio(name)
+        with st.spinner("Now record"):
+            st.write("Record a voice note")
+            record_audio(name)
 
 if __name__ == "__main__":
     main()
