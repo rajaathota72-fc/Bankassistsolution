@@ -101,7 +101,10 @@ def main():
         st.balloons()
 
     if st.button("Face Authentication"):
+        import io
         image_file = st.file_uploader("Upload Image for face Authentication", type=['jpg', 'png', 'jpeg'])
+        text_io = io.TextIOWrapper(image_file)
+        st.set_option('deprecation.showfileUploaderEncoding', False)
         our_image = Image.open(image_file)
         result_img, result_faces = detect_faces(our_image)
         st.image(result_img)
@@ -110,8 +113,9 @@ def main():
         st.success("Face stored successfully")
 
     if st.button("Record Voice note"):
-        st.write("Record a voice note")
-        record_audio(name)
+        with st.spinner("Now record"):
+            st.write("Record a voice note")
+            record_audio(name)
 
 if __name__ == "__main__":
     main()
