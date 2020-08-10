@@ -94,8 +94,6 @@ def record_audio(name):
     # close the file
     wf.close()
 
-
-
 import streamlit as st
 def main():
     st.title("Bank Assist System : Super Admin Panel")
