@@ -4,7 +4,7 @@ url = "https://biometricvisionapi.com/v1/compare"
 
 payload = {}
 files = [
-    ('image1', open('/Users/rajaathota72/Desktop/puja.jpeg','rb')),
+    ('image1', open('/Users/rajaathota72/PycharmProjects/Bankassistsolution/NewPic.jpg','rb')),
     ('image2', open('/Users/rajaathota72/PycharmProjects/Bankassistsolution/user_database/puja/puja.png','rb'))
 ]
 headers = {
